@@ -71,14 +71,14 @@ def processdata(filename, outputname):
   # prediction
   df = df.drop(['Age','Name', 'Sex', 'Ticket', 'Cabin', 'Embarked','Fare'], axis=1)
   df.to_csv(outputname, sep=',', index=False)
-
   return df
-
 
 def main():
   print processdata('titanic-data-shuffled.csv', 'final-data.csv')
 
 
-
 if __name__ == '__main__': 
   main()
+  
+  
+  
