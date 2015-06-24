@@ -38,19 +38,25 @@ def processdata(filename, outputname):
       df.loc[ (df.Age.isnull()) & (df.Gender == i) & (df.Pclass == j+1),'AgeFill'] = median
       
   # We add a new column 'AgeIsNull' to know which records has a missing
-  # values previously
-  df['AgeIsNull']  = pd.isnull(df.Age).astype(int)
-
+  # values previously. 
+  # We then interpolate the missing values from the 'Fare' column.
+  df['AgeIsNull'] = pd.isnull(df.Age).astype(int)
+  df['Fare']      = df['Fare'].interpolate()
 
   # ------------- Feature Engineering Part --------------------
   # Feature Engineering is the process of using domain/expert 
   # knowledge of the data to create features that make machine
   # learning algorithms work better. 
   #
-  # In our case we add two new columns: (FamilySize and Age*Class)
-  # in order to boost certain attributes that can be helpful 
-  # to our algorithm's final prediction/classification.
-  # This part is up to the discretion/expertise the user. 
+  # In this case, studying the data shows that women and children
+  # have higher survival rates compared to men. Thus we add 
+  # two additional features: 'Female' and 'Children', in an attempt
+  # to assist our learning model in its prediction.
+  # At the same time we add features Age*Class and FamilySize
+  # as additional engineered feature that may help our learning 
+  # model
+  df['Children']   = df['AgeFill'].map(lambda x: 1 if x < 6.0 else 0)
+  df['Female']     = df['Gender'].map(lambda x: 1 if x == 0 else 0)
   df['FamilySize'] = df['SibSp']   + df['Parch']
   df['Age*Class']  = df['AgeFill'] * df['Pclass']
 
@@ -69,16 +75,16 @@ def processdata(filename, outputname):
   # We drop the following objects columns along with the other data
   # since they wont likely contribute to our machine learning 
   # prediction
-  df = df.drop(['Age','Name', 'Sex', 'Ticket', 'Cabin', 'Embarked','Fare'], axis=1)
+  df = df.drop(['Age','Name', 'Sex', 'Ticket', 'Cabin', 'Embarked'], axis=1)
   df.to_csv(outputname, sep=',', index=False)
+
   return df
+
 
 def main():
   print processdata('titanic-data-shuffled.csv', 'final-data.csv')
 
 
+
 if __name__ == '__main__': 
   main()
-  
-  
-  
