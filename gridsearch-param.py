@@ -24,7 +24,7 @@ attrib = ['Pclass','SibSp','Gender','Parch','EmbarkedNum','AgeFill', 'AgeIsNull'
 data   = pd.read_csv('final-data.csv', header=0)
 
 
-# Since test-final.csv contains the whole
+# Since final-data.csv contains the whole
 # shuffled titanic data, we used 2/3 of 
 # the data for training and 1/3 for testing
 train = data[0:872]
